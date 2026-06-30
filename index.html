@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Michael Montague</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1814;
+    --paper: #f5f2ec;
+    --muted: #4e4a42;
+    --accent: #b49b6c;
+    --line: #e2ddd6;
+    --serif: 'Inter', system-ui, sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* ── NAVIGATION ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.5rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(245, 242, 236, 0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nav-logo {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--muted);
+    transition: color 0.25s;
+  }
+
+  .nav-links a:hover { color: var(--ink); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 55vh; /* Reduced from 75vh to make the top fold much smaller */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-top: 80px;
+  }
+
+  .hero-left {
+    padding: 3rem 4rem 3rem; /* Reduced padding from 5rem to make layout tighter */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .hero-tag {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.75rem; /* Reduced spacing */
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+
+  .hero-name {
+    font-size: clamp(1.6rem, 3vw, 2.2rem); /* Reduced title size from clamp(2.2rem, 4.2vw, 3.6rem) */
+    font-weight: 300;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s forwards;
+  }
+
+  .hero-desc {
+    margin-top: 1rem; /* Tighter margin */
+    font-size: 0.95rem; /* Reduced description text size from 1.05rem */
+    font-weight: 400;
+    color: var(--muted);
+    max-width: 36ch;
+    line-height: 1.6;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s forwards;
+  }
+
+  .hero-cta {
+    margin-top: 1.5rem; /* Tighter gap */
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.8s forwards;
+  }
+
+  .btn-primary {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--paper);
+    background: var(--ink);
+    padding: 0.85rem 2rem;
+    border: none;
+    cursor: pointer;
+    transition: background 0.25s, transform 0.2s;
+  }
+
+  .btn-primary:hover {
+    background: #333;
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--muted);
+    transition: color 0.25s;
+  }
+
+  .btn-secondary:hover { color: var(--ink); }
+
+  .hero-right {
+    position: relative;
+    overflow: hidden;
+    background: var(--line);
+    opacity: 0;
+    animation: fadeIn 1.2s 0.3s forwards;
+  }
+
+  .hero-right-inner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-placeholder {
+    width: 220px;
+    height: 280px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+
+  /* ── SECTION SHARED ── */
+  section { padding: 7rem 4rem; }
+  #work { padding-top: 3rem; } /* Halved from 6rem to tighten gap below hero */
+  #contact { padding-top: 2rem; } /* Reduced by two-thirds from 6rem */
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+  }
+
+  .section-num {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    font-weight: 300;
+    letter-spacing: -0.01em;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  /* ── WORK ── */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+  }
+
+  .project-card {
+    cursor: pointer;
+  }
+
+  .project-img {
+    aspect-ratio: 4/3;
+    background: var(--line);
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 1.2rem;
+  }
+
+  .project-img-overlay {
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    opacity: 0;
+    transition: opacity 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .project-img-overlay span {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--paper);
+  }
+
+  .project-card:hover .project-img-overlay { opacity: 0.85; }
+
+  .project-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .project-title {
+    font-size: 1.1rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+
+  .project-type {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-top: 0.25rem;
+  }
+
+  /* ── CONTACT ── */
+  #contact .section-header {
+    margin-bottom: 1rem; /* Matches hero-name to hero-desc spacing */
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: start;
+  }
+
+  .contact-intro {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 38ch;
+  }
+
+  .contact-intro strong {
+    font-weight: 400;
+    color: var(--ink);
+  }
+
+  .contact-details {
+    margin-top: 3rem;
+  }
+
+  .contact-item {
+    display: flex;
+    flex-direction: column;
+    padding: 1.2rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .contact-item-label {
+    font-family: var(--mono);
+    font-size: 0.77rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+  }
+
+
+  .contact-item-value {
+    font-family: var(--mono);
+    font-size: 0.70rem;
+    letter-spacing: 0.12em;
+    font-weight: 400;
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  /* ── FORM ── */
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .form-label {
+    font-family: var(--mono);
+    font-size: 0.77rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .form-input, .form-textarea {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--line);
+    padding: 0.75rem 0;
+    font-family: var(--mono);
+    font-size: 0.70rem;
+    letter-spacing: 0.12em;
+    font-weight: 400;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+    resize: none;
+  }
+
+  .form-input:focus, .form-textarea:focus {
+    border-color: var(--ink);
+  }
+
+  .form-input::placeholder, .form-textarea::placeholder {
+    color: #aaa7a0;
+  }
+
+  .form-textarea { min-height: 120px; }
+
+  .form-submit {
+    align-self: flex-start;
+    margin-top: 0.5rem;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--paper);
+    background: var(--ink);
+    border: none;
+    padding: 0.85rem 2rem;
+    cursor: pointer;
+    transition: background 0.25s, transform 0.2s;
+  }
+
+  .form-submit:hover {
+    background: #333;
+    transform: translateY(-1px);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 2rem 4rem;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  footer p {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .footer-links a {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    color: var(--muted);
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--ink); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 1.25rem 2rem; }
+    #hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-left { padding: 5rem 2rem 2.5rem; }
+    .hero-right { height: 40vw; }
+    section { padding: 5rem 2rem; }
+    .projects-grid { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+    footer { padding: 1.5rem 2rem; flex-direction: column; gap: 1rem; text-align: center; }
+  }
+
+  @media (max-width: 580px) {
+    .projects-grid { grid-template-columns: 1fr; }
+    .nav-links { gap: 1.2rem; }
+  }
+
+  /* ── LIGHTBOX ── */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightbox.active { display: flex; }
+
+  .lightbox-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(26, 24, 20, 0.92);
+    cursor: pointer;
+    animation: fadeIn 0.25s ease forwards;
+  }
+
+  .lightbox-panel {
+    position: relative;
+    z-index: 10;
+    background: var(--paper);
+    width: min(94vw, 1080px);
+    max-height: 96vh;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    animation: lightboxIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  @keyframes lightboxIn {
+    from { opacity: 0; transform: scale(0.95) translateY(16px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .lightbox-img-area {
+    height: 55vh;
+    background: var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0.75rem;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .lightbox-img-area .lb-icon {
+    font-size: 2rem;
+    color: var(--accent);
+    margin-bottom: 0.25rem;
+  }
+
+  .lightbox-body {
+    padding: 2.5rem 3rem 3.5rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .lightbox-nav {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .lightbox-nav button {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    padding: 0.6rem 1.2rem;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .lightbox-nav button:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+
+  .lightbox-meta-header {
+    margin-bottom: 2rem;
+  }
+
+  .lightbox-title {
+    font-size: 2rem;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-top: 0.25rem;
+  }
+
+  .lightbox-type {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* STRUCTURED CARDS FOR LIGHTBOX */
+  .lightbox-content-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  @media (max-width: 820px) {
+    .lightbox-content-grid {
+      grid-template-columns: 1fr;
+      gap: 1.2rem;
+    }
+  }
+
+  .lightbox-card {
+    background: rgba(26, 24, 20, 0.02);
+    border: 1px solid var(--line);
+    padding: 1.5rem;
+    border-radius: 4px;
+    transition: border-color 0.2s;
+  }
+
+  .lightbox-card:hover {
+    border-color: var(--accent);
+  }
+
+  .lightbox-card h4 {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 0.85rem;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 0.5rem;
+  }
+
+  .lightbox-card p {
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: 1.1rem;
+    right: 1.1rem;
+    width: 36px;
+    height: 36px;
+    background: var(--ink);
+    border: none;
+    color: var(--paper);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    transition: background 0.2s;
+    line-height: 1;
+  }
+
+  .lightbox-close:hover { background: #444; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">Michael Montague</a>
+  <ul class="nav-links">
+    <li><a href="#work">Examples</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-left">
+    <p class="hero-tag">Content Designer &amp; Technical Writer</p>
+    <h1 class="hero-name">
+      Helping users<br>succeed<br>
+    </h1>
+    <p class="hero-desc">Turning complex technical concepts and systems into clear, user-centered content.</p>
+    <div class="hero-cta">
+      <a href="#work" class="btn-primary">Examples</a>
+      <a href="#contact" class="btn-secondary">Contact →</a>
+    </div>
+  </div>
+ <div class="hero-right">
+  <div class="hero-right-inner">
+    <div class="hero-placeholder">
+      <img src="images/michael.png" alt="Michael" style="width:100%; border-radius:8px; display:block;" />
+      <p style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);text-align:center;margin-top:0.75rem;">Michael Montague</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- WORK -->
+<section id="work">
+  <div class="section-header reveal">
+    <h2 class="section-title">Examples</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="projects-grid">
+    <!-- Project 1 -->
+    <div class="project-card reveal" style="transition-delay: 0.05s">
+      <div class="project-img">
+        <img src="images/zta_profile_640.png" alt="Cisco Content Design" style="width:100%;height:100%;object-fit:cover;display:block;" />
+        <div class="project-img-overlay"><span>View Work →</span></div>
+      </div>
+      <div class="project-meta">
+        <div>
+          <div class="project-title">Cisco Content Design</div>
+          <div class="project-type">Cisco Secure Access content design</div>
+        </div>
+      </div>
+    </div>
+    <!-- Project 2 -->
+    <div class="project-card reveal" style="transition-delay: 0.12s">
+      <div class="project-img">
+        <iframe src="images/deploypac.pdf#toolbar=0&navpanes=0&scrollbar=0&page=1&zoom=65" style="width:100%;height:100%;border:none;display:block;pointer-events:none;" title="Cisco Technical Writing preview"></iframe>
+        <div class="project-img-overlay"><span>View Work →</span></div>
+      </div>
+      <div class="project-meta">
+        <div>
+          <div class="project-title">Cisco Technical Writing</div>
+          <div class="project-type">Cisco Umbrella documentation </div>
+        </div>
+      </div>
+    </div>
+    <!-- Project 3 -->
+    <div class="project-card reveal" style="transition-delay: 0.19s">
+      <div class="project-img">
+        <img src="images/Erasure_Coding_intro_640.png" alt="Netapp Technical Writer" style="width:100%;height:100%;object-fit:cover;display:block;" />
+        <div class="project-img-overlay"><span>View Work →</span></div>
+      </div>
+      <div class="project-meta">
+        <div>
+          <div class="project-title">NetApp Technical Writing</div>
+          <div class="project-type">NetApp StorageGRID Webscale documentation</div>
+        </div>
+      </div>
+    </div>
+    <!-- Project 4 -->
+    <div class="project-card reveal" style="transition-delay: 0.05s">
+      <div class="project-img">
+        <img src="images/CSC_640.png" alt="Alea Technical Writer" style="width:100%;height:100%;object-fit:cover;display:block;" />
+        <div class="project-img-overlay"><span>View Work →</span></div>
+      </div>
+      <div class="project-meta">
+        <div>
+          <div class="project-title">Alea Technical Writing</div>
+          <div class="project-type">Alea Customer Service Console Documentation</div>
+        </div>
+      </div>
+    </div>
+    <!-- Project 5 -->
+    <div class="project-card reveal" style="transition-delay: 0.12s">
+      <div class="project-img">
+        <img src="images/get_start_853.png" alt="RSA Technical Writer" style="width:100%;height:100%;object-fit:cover;display:block;" />
+        <div class="project-img-overlay"><span>View Work →</span></div>
+      </div>
+      <div class="project-meta">
+        <div>
+          <div class="project-title">RSA Technical Writing</div>
+          <div class="project-type">RSA Keon Validation Server documentation</div>
+        </div>
+      </div>
+    </div>
+    <!-- Project 6 -->
+    <div class="project-card reveal" style="transition-delay: 0.19s">
+      <div class="project-img">
+        <img src="images/freq_640.png" alt="Raytheon Technical Writer" style="width:100%;height:100%;object-fit:cover;display:block;" />
+        <div class="project-img-overlay"><span>View Work →</span></div>
+      </div>
+      <div class="project-meta">
+        <div>
+          <div class="project-title">Raytheon Technical Writing</div>
+          <div class="project-type">Canadian Automated Air Traffic System (CAATS) and Military Automated Air Traffic System (MAATS) documentation</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-header reveal">
+    <h2 class="section-title">Contact</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="contact-grid">
+    <div class="reveal">
+      <p class="contact-intro">Here to help you turn complex technical concepts and systems into clear, user-centered content.</p>
+      <div class="contact-details">
+        <div class="contact-item">
+          <span class="contact-item-label">Email</span>
+          <a class="contact-item-value" href="mailto:mmontagu@shaw.ca">mmontagu@shaw.ca</a>
+        </div>
+        <div class="contact-item">
+          <span class="contact-item-label">Phone</span>
+          <p class="contact-item-value">778-233-0947</p>
+        </div>
+        <div class="contact-item">
+          <span class="contact-item-label">LinkedIn</span>
+          <a class="contact-item-value" href="https://www.linkedin.com/in/michael-montague-86a63b1/" target="_blank" rel="noopener noreferrer">Michael Montague</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
+  <div class="lightbox-backdrop" id="lightbox-backdrop"></div>
+  <div class="lightbox-panel">
+    <button class="lightbox-close" id="lightbox-close" aria-label="Close">✕</button>
+    <div class="lightbox-img-area" id="lightbox-img">
+      <span class="lb-icon">✦</span>
+      <span>Project Image</span>
+    </div>
+    <div class="lightbox-body">
+      <div class="lightbox-nav">
+        <button id="lb-prev">← Previous</button>
+        <button id="lb-next">Next →</button>
+      </div>
+      <div class="lightbox-meta-header">
+        <div class="lightbox-type" id="lightbox-type">Content Strategy</div>
+        <h3 class="lightbox-title" id="lightbox-title">Project Title</h3>
+      </div>
+      
+      <!-- STRUCTURED CARDS FOR HIGHLIGHTING EXAMPLES -->
+      <div class="lightbox-content-grid">
+        <div class="lightbox-card">
+          <h4>Problem</h4>
+          <p id="lightbox-complexity">Complexity info...</p>
+        </div>
+        <div class="lightbox-card">
+          <h4>Solution</h4>
+          <p id="lightbox-strategy">Strategy info...</p>
+        </div>
+        <div class="lightbox-card">
+          <h4>Result</h4>
+          <p id="lightbox-result">Result/Impact info...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 Michael Montague. All rights reserved.</p>
+  <div class="footer-links">
+    <a href="#work">Examples</a>
+    <a href="#contact">Contact</a>
+  </div>
+</footer>
+
+<script>
+  // ── Scroll reveal ──
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  // ── Scroll reveal fallback ──
+  // Layout guardrail: inside certain sandbox iframes, IntersectionObserver doesn't trigger gracefully.
+  // We automatically force execution after 1.2s to prevent cards from staying permanently hidden.
+  setTimeout(() => {
+    reveals.forEach(el => {
+      if (!el.classList.contains('visible')) {
+        el.classList.add('visible');
+      }
+    });
+  }, 1200);
+
+  // ── Lightbox Database (Structured Content matching your uploaded documents) ──
+  // Note: All content strictly formatted to follow Michael's Rule Number One (Present tense, active voice, singular first-person "I")
+  const projects = [
+    { 
+      title: 'Cisco Secure Access Content Design',     
+      type: 'Content Design',    
+      complexity: 'Users require helper text to guide them to the solutions required to configure Secure Access. This includes help for new technologies such as ZTNA.',
+      strategy: 'Collaborate with UX designers through meetings, online discussions, and content added to Figma to design complete UX designs: workflows and content. This includes creating and maintaining a Secure Access Content Design Style Guide.',
+      result: 'Figma mocks created that Engineering can use to build Secure Access software interfaces. UI designed to include help links to documentation. Content design style guide created to set and maintain standards.', 
+      images: ['images/zta_profile_640.png','images/certs.png','images/custom_attributes.png','images/security_insights.png','images/destination_640.png','images/reaching_640.png','images/max_640.png','images/style_guide.pdf'], 
+      imgIndex: 0 
+    },
+    { 
+      title: 'Cisco Umbrella Documentation',  
+      type: 'Technical Writing', 
+      complexity: 'Users require documentation that explains how to configure Cisco Umbrella security products. This documentation also needs to include reference information that can be used to better understand configuration requirements.',
+      strategy: 'Collaborate with engineering and UX designers through meetings and online discussions to build a set of online documentation that includes both procedural and reference materials.',
+      result: 'Documentation created that users successfully navigate and use on their own to complete tasks and configure Umbrella. The result is improved customer satisfaction and fewer calls to support.', 
+      images: ['images/deploypac.pdf','images/isolate.pdf','images/manageweb.pdf'], 
+      imgIndex: 0 
+    },
+    { 
+      title: 'NetApp StorageGRID Webscale Documentation',  
+      type: 'Technical Writer',  
+      complexity: 'Users require documentation that explains how to configure NetApp StorageGRID object storage products. This documentation also needs to include reference information that can be used to better understand configuration requirements.',
+      strategy: 'Collaborate with engineering through meetings and online discussions to build a documentation set (procedural and reference) that users can follow to successfully configure NetApp StorageGRID and NetApp StorageGRID Webscale.',
+      result: 'Documentation created that users successfully navigate and use on their own to complete tasks and configure NetApp StorageGRID products. The result is improved customer satisfaction and fewer calls to support.', 
+      images: ['images/Erasure_Coding_intro_640.png','images/API_1_640.png','images/API_2_640.png'], 
+      imgIndex: 0 
+    },
+    { 
+      title: 'Alea Customer Service Console Documentation',            
+      type: 'Technical Writer',  
+      complexity: 'Administrators require documentation that explains how to configure and use Alea&#x2019;s Customer Service console. This documentation also needs to include reference information that can be used to better understand configuration requirements.',
+      strategy: 'Collaborate with engineering through meetings and online discussions to build a documentation set (procedural and reference) that can be followed to successfully use the Customer Service console.',
+      result: 'Documentation and online help created that admins successfully navigate and use on their own for the Customer Service console. The result is improved customer satisfaction and fewer calls to support.', 
+      images: ['images/CSC_640.png','images/CSC_login_640.png','images/CSC_Help_640.png'], 
+      imgIndex: 0 
+    },
+    { 
+      title: 'RSA Keon Validation Server Documentation',     
+      type: 'Technical Writer',  
+      complexity: 'Users require documentation that explains how to configure RSA Keon Validation Server. This documentation also needs to include reference information that can be used to better understand configuration requirements.',
+      strategy: 'Collaborate with engineering through meetings, online discussions, and engineering documents to build a documentation set (procedural and reference) that users can follow to successfully configure the Keon Validation Server.',
+      result: 'Documentation created that users successfully navigate and use on their own to complete tasks and configure the Keon Validation Server. The result is improved customer satisfaction and fewer calls to support.', 
+      images: ['images/get_start_853.png','images/val_manage_853.png','images/commands_853.png','images/index_853.png','images/help_853.png','images/training_640.png','images/train_2_853.png'], 
+      imgIndex: 0 
+    },
+    { 
+      title: 'CAATS and MAATS Documentation',
+      type: 'Technical Writer',  
+      complexity: 'Air traffic controllers require documentation that explains how to configure and use Canada&#x2019;s new air traffic control systems. This documentation also needs to include reference information that can be used to better understand configuration requirements.',
+      strategy: 'Collaborate with engineering through meetings, online discussions , and engineering documentation to build a set of documentation (procedural and reference) that air traffic controllers follow to successfully use CAATS and MAATS.',
+      result: 'Documentation suite created that air traffic controllers can use to configure and use Canada&#x2019;s new air traffic control systems. The result is improved air traffic controller confidence in their new systems.', 
+      images: ['images/freq_640.png','images/freq_2_640.png'], 
+      imgIndex: 0 
+    }
+  ];
+
+  let currentIndex = 0;
+
+  const lightbox      = document.getElementById('lightbox');
+  const lbTitle       = document.getElementById('lightbox-title');
+  const lbType        = document.getElementById('lightbox-type');
+  const lbClose       = document.getElementById('lightbox-close');
+  const lbBackdrop    = document.getElementById('lightbox-backdrop');
+  const lbPrev        = document.getElementById('lb-prev');
+  const lbNext        = document.getElementById('lb-next');
+
+  // ── Image zoom overlay ──
+  // If the sandbox server, zip utility, or web host flattens "images/example.png" directly to "./example.png",
+  // this fallback logic automatically catches the error, trims the redundant folder prefix, and loads the asset.
+  function handleImageError(img) {
+    const originalSrc = img.getAttribute('src');
+    if (!originalSrc) return;
+    
+    // Fallback 1: Try to load from root directory directly by stripping directory prefixes
+    if (originalSrc.includes('/')) {
+      const fileName = originalSrc.substring(originalSrc.lastIndexOf('/') + 1);
+      img.onerror = function() {
+        // Fallback 2: If root relative failed, try prepending absolute relative path
+        img.onerror = null; // Kill infinite loops
+        img.src = "./" + fileName;
+      };
+      img.src = fileName;
+    } else {
+      img.onerror = null;
+    }
+  }
+
+  function openZoom(src, alt) {
+    const existing = document.getElementById('zoom-overlay');
+    if (existing) existing.remove();
+    const overlay = document.createElement('div');
+    overlay.id = 'zoom-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:900;background:rgba(26,24,20,0.96);display:flex;flex-direction:column;align-items:center;justify-content:center;';
+    overlay.innerHTML = `
+      <div style="position:relative;width:88vw;height:88vh;display:flex;flex-direction:column;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0 0.75rem;flex-shrink:0;">
+          <span style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--paper);opacity:0.6;">${alt}</span>
+          <div style="display:flex;gap:1.5rem;align-items:center;">
+            <a href="${src}" target="_blank" style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);text-decoration:none;">↗ Open in new tab</a>
+            <button onclick="document.getElementById('zoom-overlay').remove()" style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--paper);background:none;border:none;cursor:pointer;opacity:0.7;">✕ Close</button>
+          </div>
+        </div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+          <img src="${src}" alt="${alt}" style="max-width:100%;max-height:100%;object-fit:contain;box-shadow:0 8px 48px rgba(0,0,0,0.6);" />
+        </div>
+      </div>`;
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+    document.body.appendChild(overlay);
+  }
+
+  // ── PDF zoom overlay ──
+  function openPdfZoom(src, title) {
+    const existing = document.getElementById('zoom-overlay');
+    if (existing) existing.remove();
+    const overlay = document.createElement('div');
+    overlay.id = 'zoom-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:900;background:rgba(26,24,20,0.96);display:flex;flex-direction:column;align-items:center;justify-content:center;';
+    overlay.innerHTML = `
+      <div style="position:relative;width:88vw;height:88vh;display:flex;flex-direction:column;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0 0.75rem;flex-shrink:0;">
+          <span style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--paper);opacity:0.6;">${title}</span>
+          <div style="display:flex;gap:1.5rem;align-items:center;">
+            <a href="${src}" target="_blank" style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);text-decoration:none;">↗ Open in new tab</a>
+            <button onclick="document.getElementById('zoom-overlay').remove()" style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--paper);background:none;border:none;cursor:pointer;opacity:0.7;">✕ Close</button>
+          </div>
+        </div>
+        <iframe src="${src}#toolbar=0&navpanes=0&scrollbar=1" style="flex:1;width:100%;border:none;display:block;box-shadow:0 8px 48px rgba(0,0,0,0.6);" title="${title}"></iframe>
+      </div>`;
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+    document.body.appendChild(overlay);
+  }
+
+  function renderLightboxImage(p) {
+    const imgArea = document.getElementById('lightbox-img');
+    if (p.images && p.images.length > 0) {
+      const idx = p.imgIndex;
+      const src = p.images[idx];
+      const isPdf = src.toLowerCase().endsWith('.pdf');
+      imgArea.style.position = 'relative';
+
+      // Counter badge — clicking it advances the sequence
+      const counterHtml = p.images.length > 1
+        ? `<div id="lb-advance-btn" style="position:absolute;bottom:0.6rem;right:0.8rem;font-family:var(--mono);font-size:0.55rem;letter-spacing:0.12em;color:var(--paper);background:rgba(26,24,20,0.8);padding:0.3rem 0.7rem;z-index:6;cursor:pointer;user-select:none;">${idx + 1}&thinsp;/&thinsp;${p.images.length} &nbsp;— click Next to advance</div>`
+        : '';
+
+      if (isPdf) {
+        // #toolbar=0&navpanes=0 suppresses TOC and toolbar in most browsers
+        const pdfSrc = src + '#toolbar=0&navpanes=0&scrollbar=1';
+        imgArea.style.cursor = 'zoom-in';
+        imgArea.innerHTML = `
+          <div style="position:relative;width:100%;height:100%;cursor:zoom-in;" id="lb-pdf-wrapper">
+            <iframe src="${pdfSrc}" style="width:100%;height:100%;border:none;display:block;pointer-events:none;" title="${p.title}"></iframe>
+            <div style="position:absolute;inset:0;z-index:2;cursor:zoom-in;" id="lb-pdf-click"></div>
+          </div>${counterHtml}`;
+        document.getElementById('lb-pdf-click').addEventListener('click', (e) => {
+          e.stopPropagation();
+          openPdfZoom(src, p.title);
+        });
+      } else {
+        imgArea.style.cursor = 'zoom-in';
+        imgArea.innerHTML = `<img src="${src}" alt="${p.title}" style="width:100%;height:100%;object-fit:contain;display:block;cursor:zoom-in;" id="lb-main-img" />${counterHtml}`;
+        // Click image → zoom overlay
+        document.getElementById('lb-main-img').addEventListener('click', (e) => {
+          e.stopPropagation();
+          openZoom(src, p.title);
+        });
+      }
+
+      // Attach advance handler to counter
+      if (p.images.length > 1) {
+        document.getElementById('lb-advance-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          p.imgIndex = (p.imgIndex + 1) % p.images.length;
+          renderLightboxImage(p);
+        });
+      }
+    } else {
+      imgArea.style.position = '';
+      imgArea.style.cursor = '';
+      imgArea.innerHTML = `<span class="lb-icon">✦</span><span>Project Image</span>`;
+    }
+  }
+
+  function openLightbox(index) {
+    currentIndex = index;
+    const p = projects[index];
+    lbTitle.textContent = p.title;
+    lbType.textContent  = p.type;
+    
+    // Injecting structured data parameters dynamically
+    document.getElementById('lightbox-complexity').textContent = p.complexity;
+    document.getElementById('lightbox-strategy').textContent   = p.strategy;
+    document.getElementById('lightbox-result').textContent     = p.result;
+
+    p.imgIndex = 0; // reset sequence when opening
+    renderLightboxImage(p);
+    lightbox.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function navigate(dir) {
+    const p = projects[currentIndex];
+    if (!p.images || p.images.length <= 1) return;
+    p.imgIndex = (p.imgIndex + dir + p.images.length) % p.images.length;
+    renderLightboxImage(p);
+  }
+
+  // Attach click to each project card
+  document.querySelectorAll('.project-card').forEach((card, i) => {
+    card.addEventListener('click', () => openLightbox(i));
+  });
+
+  lbClose.addEventListener('click', closeLightbox);
+  lbBackdrop.addEventListener('click', closeLightbox);
+  lbPrev.addEventListener('click', () => navigate(-1));
+  lbNext.addEventListener('click', () => navigate(1));
+
+  document.addEventListener('keydown', (e) => {
+    // Close zoom overlay first if open
+    const zo = document.getElementById('zoom-overlay');
+    if (zo) { zo.remove(); return; }
+    if (!lightbox.classList.contains('active')) return;
+    if (e.key === 'Escape')      closeLightbox();
+    if (e.key === 'ArrowLeft')   navigate(-1);
+    if (e.key === 'ArrowRight')  navigate(1);
+  });
+</script>
+</body>
+</html>
